@@ -1,29 +1,23 @@
-# Text to JSON API
+# Text to JSON Parser
 
-Kleine API, die Freitext zusammen mit einem JSON Schema entgegennimmt und daraus schema-konformes JSON erzeugt.
+Eine kleine API, die Freitext, Kontext und ein JSON Schema entgegennimmt und daraus schema-konformes JSON erzeugt.
 
-## Endpunkt
+## Was es kann
+
+- Extraktion von strukturierten Daten aus Freitext
+- Validierung gegen ein JSON Schema
+- Optionaler, eigener Prompt mit Platzhaltern
+- Einfache Web-UI im Browser
+
+## API
 
 `POST /generate-json`
 
-Optional kannst du im Request ein eigenes `prompt`-Feld senden. Es wird als Template behandelt und kann Platzhalter wie `{text}`, `{schema}`, `{context}`, `{rules}`, `{validation_feedback}` und `{attempt}` enthalten.
-
-## UI
-
-`GET /`
-
-Im Browser gibt es eine kleine Oberfläche mit 3 Feldern:
-
-1. Text-Eingabe
-2. Schema-Eingabe
-3. JSON-Ausgabe
-
-Beispiel:
+Request:
 
 ```json
 {
   "text": "Max Mustermann ist 32 Jahre alt und wohnt in Berlin.",
-  "prompt": "Extrahiere aus {text} nur die Felder name, age und city. Schema: {schema}. Gib nur JSON zurück.",
   "schema": {
     "type": "object",
     "properties": {
@@ -33,21 +27,41 @@ Beispiel:
     },
     "required": ["name", "age", "city"],
     "additionalProperties": false
-  }
+  },
+  "context": {
+    "now": "2026-05-17T12:00:00Z",
+    "timezone": "Europe/Berlin"
+  },
+  "prompt": "Extrahiere aus {text} nur name, age und city. Nutze das Schema: {schema}. Gib nur JSON zurueck."
 }
 ```
 
-Antwort:
+Der `prompt` ist optional. Er kann Platzhalter wie `{text}`, `{schema}`, `{context}`, `{rules}`, `{validation_feedback}` und `{attempt}` enthalten.
+
+Antwort bei Erfolg:
 
 ```json
 {
+  "ok": true,
   "data": {
     "name": "Max Mustermann",
     "age": 32,
     "city": "Berlin"
-  }
+  },
+  "error": null
 }
 ```
+
+## UI
+
+`GET /`
+
+Die Web-UI bietet vier Felder:
+
+1. Text
+2. Schema
+3. Prompt
+4. JSON Output
 
 ## Starten
 
@@ -55,15 +69,8 @@ Antwort:
 uvicorn main:app --reload
 ```
 
-Dann im Browser `http://127.0.0.1:8000/` öffnen.
-
-Oder:
-
-```bash
-text-to-json-api
-```
+Danach `http://127.0.0.1:8000/` im Browser oeffnen.
 
 ## Konfiguration
 
-Setze `OPENAI_API_KEY`, damit die Extraktion über ein Modell läuft.
-# text-to-json-parser
+Setze `OPENAI_API_KEY`, damit die Extraktion ueber ein Modell laeuft.

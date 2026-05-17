@@ -7,8 +7,12 @@ Erwartet:
 ```json
 {
   "text": "...",
-  "json_schema": {"type": "object"},
-  "context": "optional"
+  "schema": {"type": "object"},
+  "context": {
+    "now": "2026-05-17T12:00:00Z",
+    "timezone": "Europe/Berlin"
+  },
+  "prompt": "optional"
 }
 ```
 
@@ -16,7 +20,9 @@ Antwort bei Erfolg:
 
 ```json
 {
-  "data": {}
+  "ok": true,
+  "data": {},
+  "error": null
 }
 ```
 
@@ -24,6 +30,12 @@ Antwort bei Fehler:
 
 ```json
 {
-  "error": "validation_failed"
+  "ok": false,
+  "data": null,
+  "error": {
+    "code": "validation_failed",
+    "message": "...",
+    "details": []
+  }
 }
 ```
