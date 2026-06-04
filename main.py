@@ -1,9 +1,20 @@
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 
 from src.api.routes import router
 
-app = FastAPI(title="Text2JSON API", version="0.1.0")
+app = FastAPI(title="Text2JSON API", version="0.2.0")
+
+# CORS ist an, damit der ARCS interpretation_worker (oder das Web-UI)
+# auch cross-origin anfragen darf. Lokale Entwicklungsumgebung.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app.include_router(router)
 
 
